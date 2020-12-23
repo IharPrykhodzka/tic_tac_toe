@@ -10,61 +10,73 @@ import splitties.toast.toast
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
 
-    private lateinit var player: Player
+    private lateinit var thePlayer: Player
     private lateinit var playerAI: Player
     var pass = false
     private lateinit var thisPlayer: Player
     private lateinit var pField: MutableList<Button>
+    private lateinit var checkField: MutableMap<Button, Player>
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+
         start.setOnClickListener {
 
+            start.setText(R.string.play_again)
+
             pField = mutableListOf(line_1_1, line_1_2, line_1_3, line_2_1, line_2_2, line_2_3, line_3_1, line_3_2, line_3_3)
+            pass = false
+            pField.forEach{
+                it.setBackgroundResource(R.drawable.black_square)
+                it.isEnabled = true
+            }
 
             val crossAndZero = listOf(CROSS, ZERO)
-            player = Player(crossAndZero.random())
-            playerAI = Player(if (player.turn == CROSS) {
+            thePlayer = Player(crossAndZero.random())
+            playerAI = Player(if (thePlayer.turn == CROSS) {
                 ZERO
             } else {
                 CROSS
             })
 
-            Log.d(LOG, "${player.turn} \n ${playerAI.turn}")
+            checkField = mutableMapOf((start to playerAI))
+            Log.d(LOG, "${thePlayer.turn} \n ${playerAI.turn}")
 
-            btnInit()
-            game(player, playerAI)
+            initBtn()
+            playGame(thePlayer, playerAI)
         }
     }
 
     override fun onClick(v: View?) {
 
         when (v?.id) {
-            line_1_1.id -> updatePlayingField(line_1_1, thisPlayer.turn)
-            line_1_2.id -> updatePlayingField(line_1_2, thisPlayer.turn)
-            line_1_3.id -> updatePlayingField(line_1_3, thisPlayer.turn)
+            line_1_1.id -> updatePlayingField(line_1_1, thisPlayer)
+            line_1_2.id -> updatePlayingField(line_1_2, thisPlayer)
+            line_1_3.id -> updatePlayingField(line_1_3, thisPlayer)
 
-            line_2_1.id -> updatePlayingField(line_2_1, thisPlayer.turn)
-            line_2_2.id -> updatePlayingField(line_2_2, thisPlayer.turn)
-            line_2_3.id -> updatePlayingField(line_2_3, thisPlayer.turn)
+            line_2_1.id -> updatePlayingField(line_2_1, thisPlayer)
+            line_2_2.id -> updatePlayingField(line_2_2, thisPlayer)
+            line_2_3.id -> updatePlayingField(line_2_3, thisPlayer)
 
-            line_3_1.id -> updatePlayingField(line_3_1, thisPlayer.turn)
-            line_3_2.id -> updatePlayingField(line_3_2, thisPlayer.turn)
-            line_3_3.id -> updatePlayingField(line_3_3, thisPlayer.turn)
+            line_3_1.id -> updatePlayingField(line_3_1, thisPlayer)
+            line_3_2.id -> updatePlayingField(line_3_2, thisPlayer)
+            line_3_3.id -> updatePlayingField(line_3_3, thisPlayer)
         }
     }
 
-    private fun game(player: Player, playerAI: Player) {
+    private fun playGame(player: Player, playerAI: Player) {
 
         if (!pass) {
             if (playerAI.turn == CROSS) {
+                giveTextResult.text = getString(R.string.AI_first)
                 thisPlayer = playerAI
                 playerAI.playAI(pField)
 
             } else {
-                toast("Ваш ход")
+                giveTextResult.text = getString(R.string.you_first)
                 thisPlayer = player
             }
         } else {
@@ -72,7 +84,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 thisPlayer = playerAI
                 playerAI.playAI(pField)
             } else {
-                toast("Ваш ход")
                 thisPlayer = player
 
             }
@@ -80,23 +91,32 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     }
 
-    private fun updatePlayingField(theBtn: Button, turn: Int) {
+    private fun updatePlayingField(theBtn: Button, player: Player) {
 
         pField.remove(theBtn)
         theBtn.isEnabled = false
         pass = !pass
 
-        if (turn == CROSS) {
-            theBtn.setBackgroundResource(R.drawable.ic_add)
+
+        checkField[theBtn] = player
+
+        if (player.turn == CROSS) {
+            theBtn.setBackgroundResource(CROSS_VIEW)
         } else {
-            theBtn.setBackgroundResource(R.drawable.ic_zero_24)
+            theBtn.setBackgroundResource(ZERO_VIEW)
         }
 
 
-        game(player, playerAI)
+        if (!checkEnd()) {
+            playGame(thePlayer, playerAI)
+        } else {
+            pField.forEach {
+                it.isEnabled = false
+            }
+        }
     }
 
-    private fun btnInit() {
+    private fun initBtn() {
         line_1_1.setOnClickListener(this)
         line_1_2.setOnClickListener(this)
         line_1_3.setOnClickListener(this)
@@ -106,5 +126,75 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         line_3_1.setOnClickListener(this)
         line_3_2.setOnClickListener(this)
         line_3_3.setOnClickListener(this)
+    }
+
+    private fun checkEnd(): Boolean {
+
+        if (checkField[line_1_1] == thePlayer && checkField[line_1_2] == thePlayer && checkField[line_1_3] == thePlayer) {
+            printText(thePlayer)
+            return true
+        } else if (checkField[line_2_1] == thePlayer && checkField[line_2_2] == thePlayer && checkField[line_2_3] == thePlayer) {
+            printText(thePlayer)
+            return true
+        } else if (checkField[line_3_1] == thePlayer && checkField[line_3_2] == thePlayer && checkField[line_3_3] == thePlayer) {
+            printText(thePlayer)
+            return true
+        } else if (checkField[line_1_1] == thePlayer && checkField[line_2_1] == thePlayer && checkField[line_3_1] == thePlayer) {
+            printText(thePlayer)
+            return true
+        } else if (checkField[line_1_2] == thePlayer && checkField[line_2_2] == thePlayer && checkField[line_3_2] == thePlayer) {
+            printText(thePlayer)
+            return true
+        } else if (checkField[line_1_3] == thePlayer && checkField[line_2_3] == thePlayer && checkField[line_3_3] == thePlayer) {
+            printText(thePlayer)
+            return true
+        } else if (checkField[line_1_1] == thePlayer && checkField[line_2_2] == thePlayer && checkField[line_3_3] == thePlayer) {
+            printText(thePlayer)
+            return true
+        } else if (checkField[line_1_3] == thePlayer && checkField[line_2_2] == thePlayer && checkField[line_3_1] == thePlayer) {
+            printText(thePlayer)
+            return true
+
+
+        } else if (checkField[line_1_1] == playerAI && checkField[line_1_2] == playerAI && checkField[line_1_3] == playerAI) {
+            printText(playerAI)
+            return true
+        } else if (checkField[line_2_1] == playerAI && checkField[line_2_2] == playerAI && checkField[line_2_3] == playerAI) {
+            printText(playerAI)
+            return true
+        } else if (checkField[line_3_1] == playerAI && checkField[line_3_2] == playerAI && checkField[line_3_3] == playerAI) {
+            printText(playerAI)
+            return true
+        } else if (checkField[line_1_1] == playerAI && checkField[line_2_1] == playerAI && checkField[line_3_1] == playerAI) {
+            printText(playerAI)
+            return true
+        } else if (checkField[line_1_2] == playerAI && checkField[line_2_2] == playerAI && checkField[line_3_2] == playerAI) {
+            printText(playerAI)
+            return true
+        } else if (checkField[line_1_3] == playerAI && checkField[line_2_3] == playerAI && checkField[line_3_3] == playerAI) {
+            printText(playerAI)
+            return true
+        } else if (checkField[line_1_1] == playerAI && checkField[line_2_2] == playerAI && checkField[line_3_3] == playerAI) {
+            printText(playerAI)
+            return true
+        } else if (checkField[line_1_3] == playerAI && checkField[line_2_2] == playerAI && checkField[line_3_1] == playerAI) {
+            printText(playerAI)
+            return true
+
+
+        } else if (pField.isNullOrEmpty()) {
+            giveTextResult.text = getString(R.string.draw)
+            return true
+        } else {
+            return false
+        }
+    }
+
+    private fun printText(player: Player) {
+        if (player == playerAI) {
+            giveTextResult.text = getString(R.string.you_loose)
+        } else {
+            giveTextResult.text = getString(R.string.you_win)
+        }
     }
 }
