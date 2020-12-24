@@ -27,6 +27,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
             start.setText(R.string.play_again)
 
+            letGone()
+
             pField = mutableListOf(line_1_1, line_1_2, line_1_3, line_2_1, line_2_2, line_2_3, line_3_1, line_3_2, line_3_3)
             pass = false
             pField.forEach{
@@ -131,53 +133,69 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private fun checkEnd(): Boolean {
 
         if (checkField[line_1_1] == thePlayer && checkField[line_1_2] == thePlayer && checkField[line_1_3] == thePlayer) {
+            win_1_3.visibility = View.VISIBLE
             printText(thePlayer)
             return true
         } else if (checkField[line_2_1] == thePlayer && checkField[line_2_2] == thePlayer && checkField[line_2_3] == thePlayer) {
+            win_4_6.visibility = View.VISIBLE
             printText(thePlayer)
             return true
         } else if (checkField[line_3_1] == thePlayer && checkField[line_3_2] == thePlayer && checkField[line_3_3] == thePlayer) {
+            win_7_9.visibility = View.VISIBLE
             printText(thePlayer)
             return true
         } else if (checkField[line_1_1] == thePlayer && checkField[line_2_1] == thePlayer && checkField[line_3_1] == thePlayer) {
+            win_1_7.visibility = View.VISIBLE
             printText(thePlayer)
             return true
         } else if (checkField[line_1_2] == thePlayer && checkField[line_2_2] == thePlayer && checkField[line_3_2] == thePlayer) {
+            win_2_8.visibility = View.VISIBLE
             printText(thePlayer)
             return true
         } else if (checkField[line_1_3] == thePlayer && checkField[line_2_3] == thePlayer && checkField[line_3_3] == thePlayer) {
+            win_3_9.visibility = View.VISIBLE
             printText(thePlayer)
             return true
         } else if (checkField[line_1_1] == thePlayer && checkField[line_2_2] == thePlayer && checkField[line_3_3] == thePlayer) {
+            win_1_9.visibility = View.VISIBLE
             printText(thePlayer)
             return true
         } else if (checkField[line_1_3] == thePlayer && checkField[line_2_2] == thePlayer && checkField[line_3_1] == thePlayer) {
+            win_3_7.visibility = View.VISIBLE
             printText(thePlayer)
             return true
 
 
         } else if (checkField[line_1_1] == playerAI && checkField[line_1_2] == playerAI && checkField[line_1_3] == playerAI) {
+            win_1_3.visibility = View.VISIBLE
             printText(playerAI)
             return true
         } else if (checkField[line_2_1] == playerAI && checkField[line_2_2] == playerAI && checkField[line_2_3] == playerAI) {
+            win_4_6.visibility = View.VISIBLE
             printText(playerAI)
             return true
         } else if (checkField[line_3_1] == playerAI && checkField[line_3_2] == playerAI && checkField[line_3_3] == playerAI) {
+            win_7_9.visibility = View.VISIBLE
             printText(playerAI)
             return true
         } else if (checkField[line_1_1] == playerAI && checkField[line_2_1] == playerAI && checkField[line_3_1] == playerAI) {
+            win_1_7.visibility = View.VISIBLE
             printText(playerAI)
             return true
         } else if (checkField[line_1_2] == playerAI && checkField[line_2_2] == playerAI && checkField[line_3_2] == playerAI) {
+            win_2_8.visibility = View.VISIBLE
             printText(playerAI)
             return true
         } else if (checkField[line_1_3] == playerAI && checkField[line_2_3] == playerAI && checkField[line_3_3] == playerAI) {
+            win_3_9.visibility = View.VISIBLE
             printText(playerAI)
             return true
         } else if (checkField[line_1_1] == playerAI && checkField[line_2_2] == playerAI && checkField[line_3_3] == playerAI) {
+            win_1_9.visibility = View.VISIBLE
             printText(playerAI)
             return true
         } else if (checkField[line_1_3] == playerAI && checkField[line_2_2] == playerAI && checkField[line_3_1] == playerAI) {
+            win_3_7.visibility = View.VISIBLE
             printText(playerAI)
             return true
 
@@ -196,5 +214,16 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         } else {
             giveTextResult.text = getString(R.string.you_win)
         }
+    }
+
+    private fun letGone(){
+        win_3_7.visibility = View.GONE
+        win_1_9.visibility = View.GONE
+        win_2_8.visibility = View.GONE
+        win_1_7.visibility = View.GONE
+        win_7_9.visibility = View.GONE
+        win_4_6.visibility = View.GONE
+        win_1_3.visibility = View.GONE
+        win_3_9.visibility = View.GONE
     }
 }
